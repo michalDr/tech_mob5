@@ -36,6 +36,12 @@ public class NeoTest {
 			}
 		}
 
+		clearDb(graphDb);
+
+		graphDb.shutdown();
+	}
+
+	private static void clearDb(GraphDatabaseService graphDb) {
 		try (Transaction tx = graphDb.beginTx()) {
 			for (Node node : graphDb.getAllNodes()) {
 				for (Relationship rel : node.getRelationships()) {
@@ -45,7 +51,5 @@ public class NeoTest {
 			}
 			tx.success();
 		}
-
-		graphDb.shutdown();
 	}
 }
