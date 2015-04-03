@@ -1,0 +1,5 @@
+START n=node:node('*:*')
+MATCH (n)-[r]->(x)
+RETURN n, COUNT(r)
+ORDER BY COUNT(r) DESC
+LIMIT 10

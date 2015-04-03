@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.index.Index;
 
 import pl.edu.agh.tech_mob.project5.files.contents.Point;
 
@@ -20,9 +23,14 @@ public class RelationshipsFile {
 	private PointsFile pointsFile;
 	private GraphDatabaseService graphDb;
 
+	Index<Node> index;
+
 	public RelationshipsFile(GraphDatabaseService graphDb, PointsFile pf) {
 		this.graphDb = graphDb;
 		this.pointsFile = pf;
+		try (Transaction tx = graphDb.beginTx()) {
+			this.index = this.graphDb.index().forNodes("node");
+		}
 		System.out.println("RelationshipFile object created.");
 	}
 
@@ -41,6 +49,7 @@ public class RelationshipsFile {
 		List<Point> points = new ArrayList<>();
 		Point point;
 		line = br.readLine();
+		Label nodeLabel = DynamicLabel.label("node");
 		Node node;
 		if (line != null) {
 			createListsFromString(columns, rows, line);
@@ -62,7 +71,9 @@ public class RelationshipsFile {
 						p.setNode(graphDb.getNodeById(p.getNodeId()));
 					} else {
 						node = graphDb.createNode();
+						node.addLabel(nodeLabel);
 						node.setProperty("value", p.getValue());
+						index.add(node, "node", p.getValue());
 						p.setNodeNodeIdAndAddedToDb(node);
 					}
 				}
