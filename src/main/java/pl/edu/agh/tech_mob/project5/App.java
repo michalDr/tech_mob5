@@ -35,8 +35,6 @@ public class App {
 		} catch (IOException e) {
 			System.err.println("I/O error!");
 		}
-		// int maxRelationships = 0;
-		// List<Node> maxNodes = new ArrayList<>();
 		graphDb.shutdown();
 	}
 }
