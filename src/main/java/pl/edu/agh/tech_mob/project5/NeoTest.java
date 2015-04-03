@@ -47,6 +47,7 @@ public class NeoTest {
 				for (Relationship rel : node.getRelationships()) {
 					rel.delete();
 				}
+				// lol
 				node.delete();
 			}
 			tx.success();
